@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { poppins, inter } from "@/fonts";
+import AppShell from "./AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function RootLayout({
         className={`${poppins.variable} ${inter.variable} antialiased`}
         style={{ height: "100%", margin: 0, padding: 0 }}
       >
-        {children}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
