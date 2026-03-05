@@ -8,9 +8,16 @@ interface PhasorDiagramProps {
 }
 
 export function PhasorDiagram({ data }: PhasorDiagramProps) {
-  const size = 280;
+  const size = 300;
   const center = size / 2;
-  const scale = 25; // Pixels per volt/amp
+  
+  // Auto-scale based on magnitude to ensure visibility
+  const maxMagnitude = Math.max(
+    Math.hypot(data.voltage_real, data.voltage_imag),
+    Math.hypot(data.current_real, data.current_imag),
+    Math.hypot(data.impedance_real, data.impedance_imag)
+  );
+  const scale = Math.min(100, (size / 3) / Math.max(1, maxMagnitude));
 
   // Scale the phasors
   const voltage_x = center + data.voltage_real * scale;
@@ -26,12 +33,13 @@ export function PhasorDiagram({ data }: PhasorDiagramProps) {
     <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
       <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4">Phasor Diagram</h3>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-hidden">
         <svg
-          width={size}
-          height={size}
+          width="100%"
+          height="auto"
           viewBox={`0 0 ${size} ${size}`}
-          className="w-full max-w-xs bg-slate-950/50 rounded-lg border border-slate-700"
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full max-w-sm bg-slate-950/50 rounded-lg border border-slate-700"
         >
         {/* Grid lines */}
         <line

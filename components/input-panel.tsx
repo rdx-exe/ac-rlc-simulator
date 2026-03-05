@@ -2,7 +2,7 @@
 
 import { CircuitState, CircuitMode } from '@/lib/types';
 import { Card } from '@/components/ui/card';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface InputPanelProps {
   state: CircuitState;
@@ -24,6 +24,17 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
     voltage: state.voltage.toString(),
     frequency: state.frequency.toString(),
   });
+
+  // Sync input values when state changes externally
+  useEffect(() => {
+    setInputValues({
+      resistance: state.resistance.toString(),
+      inductance: state.inductance.toString(),
+      capacitance: state.capacitance.toString(),
+      voltage: state.voltage.toString(),
+      frequency: state.frequency.toString(),
+    });
+  }, [state]);
 
   const handleModeChange = (mode: CircuitMode) => {
     onChange({ ...state, mode });
@@ -61,7 +72,7 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
       label: 'Inductance',
       key: 'inductance' as const,
       unit: 'mH',
-      min: 0,
+      min: 1,
       max: 500,
       step: 1,
       show: state.mode === 'RL' || state.mode === 'RLC',
@@ -70,7 +81,7 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
       label: 'Capacitance',
       key: 'capacitance' as const,
       unit: 'µF',
-      min: 0,
+      min: 0.1,
       max: 100,
       step: 0.1,
       show: state.mode === 'RC' || state.mode === 'RLC',

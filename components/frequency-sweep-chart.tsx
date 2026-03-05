@@ -25,8 +25,9 @@ export function FrequencySweepChart({ data }: FrequencySweepChartProps) {
     <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
       <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4">Frequency Response</h3>
 
-      <ResponsiveContainer width="100%" height={280}>
-        <LineChart data={data}>
+      <div className="w-full h-72 md:h-96">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} key={`freq-${data.length}`}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="rgb(51, 65, 85)"
@@ -101,8 +102,9 @@ export function FrequencySweepChart({ data }: FrequencySweepChartProps) {
             name="Current (A)"
             isAnimationActive={false}
           />
-        </LineChart>
-      </ResponsiveContainer>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
       <p className="text-xs text-slate-400 mt-4">
         Frequency response shows how impedance and current vary across a frequency range.

@@ -8,16 +8,17 @@ interface ImpedanceTriangleProps {
 }
 
 export function ImpedanceTriangle({ metrics }: ImpedanceTriangleProps) {
-  const size = 280;
-  const padding = 35;
+  const size = 300;
+  const padding = 40;
   const width = size - 2 * padding;
 
   // Calculate the triangle vertices based on impedance components
-  const r = metrics.impedance * Math.cos(metrics.phase_angle);
-  const x = metrics.impedance * Math.sin(metrics.phase_angle);
+  const r = Math.abs(metrics.impedance * Math.cos(metrics.phase_angle));
+  const x = Math.abs(metrics.impedance * Math.sin(metrics.phase_angle));
   const z = metrics.impedance;
 
-  const maxValue = Math.max(Math.abs(r), Math.abs(x), z) * 1.2;
+  // Use minimum impedance to ensure scaling visibility
+  const maxValue = Math.max(Math.max(r, x), z, 1) * 1.1;
   const scale = width / maxValue;
 
   const p1 = [padding, size - padding]; // Origin (0, 0)
@@ -28,12 +29,13 @@ export function ImpedanceTriangle({ metrics }: ImpedanceTriangleProps) {
     <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
       <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4">Impedance Triangle</h3>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-hidden">
         <svg
-          width={size}
-          height={size}
+          width="100%"
+          height="auto"
           viewBox={`0 0 ${size} ${size}`}
-          className="w-full max-w-xs bg-slate-950/50 rounded-lg border border-slate-700"
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full max-w-sm bg-slate-950/50 rounded-lg border border-slate-700"
         >
         {/* Grid */}
         {[0, 1, 2, 3, 4, 5].map((i) => (
