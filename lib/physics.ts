@@ -220,8 +220,8 @@ export function generateFrequencySweepData(state: CircuitState, points: number =
   const step = (maxFreq - minFreq) / points;
 
   for (let freq = minFreq; freq <= maxFreq; freq += step) {
-    const xl = calculateInductiveReactance(freq, state.inductance);
-    const xc = calculateCapacitiveReactance(freq, state.capacitance);
+    const xl = state.mode === 'R' || state.mode === 'RC' ? 0 : calculateInductiveReactance(freq, state.inductance);
+    const xc = state.mode === 'R' || state.mode === 'RL' ? 0 : calculateCapacitiveReactance(freq, state.capacitance);
     const x = calculateTotalReactance(xl, xc);
     const z = calculateImpedance(state.resistance, x);
     const i = calculateCurrent(state.voltage, z);

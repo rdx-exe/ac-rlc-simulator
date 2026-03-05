@@ -21,8 +21,9 @@ export function WaveformChart({ data }: WaveformChartProps) {
   return (
     <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
       <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4">Voltage & Current Waveforms</h3>
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data}>
+      <div className="w-full h-64 md:h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} key={`waveform-${data.length}`}>
           <defs>
             <linearGradient id="colorVoltage" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="rgb(59, 130, 246)" stopOpacity={0.8} />
@@ -81,8 +82,9 @@ export function WaveformChart({ data }: WaveformChartProps) {
             name="Current (A)"
             isAnimationActive={false}
           />
-        </LineChart>
-      </ResponsiveContainer>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
       <p className="text-xs text-slate-400 mt-4">
         Voltage and current waveforms display the instantaneous values across one period at the operating frequency.
