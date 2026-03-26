@@ -118,7 +118,7 @@ export function CircuitDashboard() {
             </div>
           </div>
           <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-700 text-center text-slate-400 text-xs md:text-sm">
-            <p>AC Circuit Simulator © 2024. Built with physics simulations and React.</p>
+            <p>AC Circuit Simulator © 2026. Built by Ritam Das.</p>
           </div>
         </div>
       </footer>
