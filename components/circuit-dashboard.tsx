@@ -61,7 +61,7 @@ export function CircuitDashboard() {
 
           {/* Middle Column - Results and Phasor (Full width on mobile, 1/2 on tablet, 1/3 on desktop) */}
           <div className="space-y-4 md:space-y-6 sm:col-span-1">
-            <ResultsPanel metrics={metrics} />
+            <ResultsPanel metrics={metrics} mode={state.mode} />
             <PhasorDiagram data={phasorData} />
           </div>
 
@@ -81,25 +81,39 @@ export function CircuitDashboard() {
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 mt-8 md:mt-12">
         <div className="max-w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             <div>
               <h3 className="text-white font-semibold mb-2 text-sm md:text-base">About</h3>
               <p className="text-slate-400 text-xs md:text-sm">
-                A physics-based simulator for AC circuits with complete electromagnetic calculations.
+                Physics-based simulator for all AC circuit configurations with real-time calculations.
               </p>
             </div>
             <div>
-              <h3 className="text-white font-semibold mb-2 text-sm md:text-base">Formulas</h3>
+              <h3 className="text-white font-semibold mb-2 text-sm md:text-base">Active Circuit</h3>
+              <p className="text-blue-400 text-xs md:text-sm font-mono font-bold">
+                {state.mode === 'R' && 'Pure Resistor'}
+                {state.mode === 'L' && 'Pure Inductor'}
+                {state.mode === 'C' && 'Pure Capacitor'}
+                {state.mode === 'RL' && 'Resistor + Inductor'}
+                {state.mode === 'RC' && 'Resistor + Capacitor'}
+                {state.mode === 'RLC' && 'Full RLC Circuit'}
+              </p>
+              <p className="text-slate-500 text-xs mt-1">
+                Phase: {metrics.phase_angle_degrees.toFixed(1)}° | PF: {Math.abs(metrics.power_factor).toFixed(3)}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-2 text-sm md:text-base">Key Formulas</h3>
               <p className="text-slate-400 text-xs md:text-sm font-mono leading-relaxed">
-                XL = 2πfL | XC = 1/(2πfC)<br className="hidden sm:block" />
-                Z = √(R² + X²) | I = V/Z<br className="hidden sm:block" />
-                φ = arctan(X/R) | PF = cos(φ)
+                Z = √(R² + X²)<br />
+                I = V/Z<br />
+                φ = arctan(X/R)
               </p>
             </div>
             <div className="sm:col-span-2 lg:col-span-1">
               <h3 className="text-white font-semibold mb-2 text-sm md:text-base">Features</h3>
               <p className="text-slate-400 text-xs md:text-sm">
-                Real-time calculations • Phasor diagrams • Waveform visualization • Frequency analysis
+                6 circuit modes • Interactive diagrams • Real-time graphs • Frequency sweep
               </p>
             </div>
           </div>

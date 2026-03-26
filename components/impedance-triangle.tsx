@@ -2,12 +2,14 @@
 
 import { CircuitMetrics } from '@/lib/types';
 import { Card } from '@/components/ui/card';
+import { useState } from 'react';
 
 interface ImpedanceTriangleProps {
   metrics: CircuitMetrics;
 }
 
 export function ImpedanceTriangle({ metrics }: ImpedanceTriangleProps) {
+  const [hoveredSide, setHoveredSide] = useState<string | null>(null);
   const size = 300;
   const padding = 40;
   const width = size - 2 * padding;
@@ -79,16 +81,6 @@ export function ImpedanceTriangle({ metrics }: ImpedanceTriangleProps) {
           strokeWidth="1.5"
         />
 
-        {/* Triangle */}
-        <polygon
-          points={`${p1[0]},${p1[1]} ${p2[0]},${p2[1]} ${p3[0]},${p3[1]}`}
-          fill="none"
-          stroke="rgb(59, 130, 246)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
         {/* Fill with gradient */}
         <defs>
           <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -101,10 +93,116 @@ export function ImpedanceTriangle({ metrics }: ImpedanceTriangleProps) {
           fill="url(#triangleGradient)"
         />
 
+        {/* Triangle sides with hover effects */}
+        {/* Resistance (horizontal) */}
+        <g
+          onMouseEnter={() => setHoveredSide('R')}
+          onMouseLeave={() => setHoveredSide(null)}
+          style={{ cursor: 'pointer' }}
+        >
+          <line
+            x1={p1[0]}
+            y1={p1[1]}
+            x2={p2[0]}
+            y2={p2[1]}
+            stroke={hoveredSide === 'R' ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)'}
+            strokeWidth={hoveredSide === 'R' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            className="transition-all duration-200"
+          />
+          {hoveredSide === 'R' && (
+            <line
+              x1={p1[0]}
+              y1={p1[1]}
+              x2={p2[0]}
+              y2={p2[1]}
+              stroke="rgb(96, 165, 250)"
+              strokeWidth="5"
+              opacity="0.2"
+            />
+          )}
+        </g>
+
+        {/* Reactance (vertical) */}
+        <g
+          onMouseEnter={() => setHoveredSide('X')}
+          onMouseLeave={() => setHoveredSide(null)}
+          style={{ cursor: 'pointer' }}
+        >
+          <line
+            x1={p2[0]}
+            y1={p2[1]}
+            x2={p3[0]}
+            y2={p3[1]}
+            stroke={hoveredSide === 'X' ? 'rgb(168, 85, 247)' : 'rgb(139, 92, 246)'}
+            strokeWidth={hoveredSide === 'X' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            className="transition-all duration-200"
+          />
+          {hoveredSide === 'X' && (
+            <line
+              x1={p2[0]}
+              y1={p2[1]}
+              x2={p3[0]}
+              y2={p3[1]}
+              stroke="rgb(168, 85, 247)"
+              strokeWidth="5"
+              opacity="0.2"
+            />
+          )}
+        </g>
+
+        {/* Impedance (hypotenuse) */}
+        <g
+          onMouseEnter={() => setHoveredSide('Z')}
+          onMouseLeave={() => setHoveredSide(null)}
+          style={{ cursor: 'pointer' }}
+        >
+          <line
+            x1={p1[0]}
+            y1={p1[1]}
+            x2={p3[0]}
+            y2={p3[1]}
+            stroke={hoveredSide === 'Z' ? 'rgb(34, 197, 94)' : 'rgb(59, 130, 246)'}
+            strokeWidth={hoveredSide === 'Z' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            className="transition-all duration-200"
+          />
+          {hoveredSide === 'Z' && (
+            <line
+              x1={p1[0]}
+              y1={p1[1]}
+              x2={p3[0]}
+              y2={p3[1]}
+              stroke="rgb(34, 197, 94)"
+              strokeWidth="5"
+              opacity="0.2"
+            />
+          )}
+        </g>
+
         {/* Vertices */}
-        <circle cx={p1[0]} cy={p1[1]} r="3" fill="rgb(100, 116, 139)" />
-        <circle cx={p2[0]} cy={p2[1]} r="3" fill="rgb(59, 130, 246)" />
-        <circle cx={p3[0]} cy={p3[1]} r="3" fill="rgb(139, 92, 246)" />
+        <circle
+          cx={p1[0]}
+          cy={p1[1]}
+          r={hoveredSide ? 4 : 3}
+          fill="rgb(100, 116, 139)"
+          className="transition-all duration-200"
+        />
+        <circle
+          cx={p2[0]}
+          cy={p2[1]}
+          r={hoveredSide === 'R' || hoveredSide === 'Z' ? 5 : 3}
+          fill={hoveredSide === 'R' || hoveredSide === 'Z' ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)'}
+          className="transition-all duration-200"
+        />
+        <circle
+          cx={p3[0]}
+          cy={p3[1]}
+          r={hoveredSide === 'X' || hoveredSide === 'Z' ? 5 : 3}
+          fill={hoveredSide === 'X' || hoveredSide === 'Z' ? 'rgb(168, 85, 247)' : 'rgb(139, 92, 246)'}
+          className="transition-all duration-200"
+        />
 
         {/* Labels */}
         <text x={padding - 20} y={size - padding + 5} fontSize="11" fill="rgb(100, 116, 139)">

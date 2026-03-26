@@ -9,11 +9,13 @@ interface InputPanelProps {
   onChange: (state: CircuitState) => void;
 }
 
-const CIRCUIT_MODES: { label: string; value: CircuitMode }[] = [
-  { label: 'Resistor Only', value: 'R' },
-  { label: 'Resistor + Inductor', value: 'RL' },
-  { label: 'Resistor + Capacitor', value: 'RC' },
-  { label: 'Resistor + Inductor + Capacitor', value: 'RLC' },
+const CIRCUIT_MODES: { label: string; value: CircuitMode; description: string }[] = [
+  { label: 'Resistor Only', value: 'R', description: 'Pure resistive' },
+  { label: 'Inductor Only', value: 'L', description: 'Pure inductive' },
+  { label: 'Capacitor Only', value: 'C', description: 'Pure capacitive' },
+  { label: 'R + L', value: 'RL', description: 'Resistor + Inductor' },
+  { label: 'R + C', value: 'RC', description: 'Resistor + Capacitor' },
+  { label: 'R + L + C', value: 'RLC', description: 'Full RLC circuit' },
 ];
 
 export function InputPanel({ state, onChange }: InputPanelProps) {
@@ -66,7 +68,7 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
       min: 0,
       max: 10000,
       step: 10,
-      show: true,
+      show: state.mode !== 'L' && state.mode !== 'C',
     },
     {
       label: 'Inductance',
@@ -75,7 +77,7 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
       min: 1,
       max: 500,
       step: 1,
-      show: state.mode === 'RL' || state.mode === 'RLC',
+      show: state.mode === 'L' || state.mode === 'RL' || state.mode === 'RLC',
     },
     {
       label: 'Capacitance',
@@ -84,7 +86,7 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
       min: 0.1,
       max: 100,
       step: 0.1,
-      show: state.mode === 'RC' || state.mode === 'RLC',
+      show: state.mode === 'C' || state.mode === 'RC' || state.mode === 'RLC',
     },
     {
       label: 'Voltage',
@@ -118,18 +120,22 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
         <label className="text-sm font-semibold text-slate-200 block mb-3">
           Circuit Type
         </label>
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {CIRCUIT_MODES.map((mode) => (
             <button
               key={mode.value}
               onClick={() => handleModeChange(mode.value)}
-              className={`px-3 py-2 text-xs md:text-sm rounded-lg font-medium transition-all ${
+              className={`group px-3 py-2.5 text-xs md:text-sm rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
                 state.mode === mode.value
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/50 scale-105'
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600 active:scale-95'
               }`}
+              title={mode.description}
             >
-              {mode.label}
+              <span className="relative z-10">{mode.label}</span>
+              {state.mode === mode.value && (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 animate-pulse" />
+              )}
             </button>
           ))}
         </div>
@@ -182,10 +188,16 @@ export function InputPanel({ state, onChange }: InputPanelProps) {
         })}
       </div>
 
-      <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-slate-700">
+      <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-slate-700 space-y-2">
         <p className="text-xs text-slate-400 leading-relaxed">
-          Select a circuit type, then adjust parameters using sliders or text inputs to explore AC circuit behavior in real-time.
+          📊 Select a circuit type, then adjust parameters using sliders or text inputs to explore AC circuit behavior in real-time.
         </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-500">
+          <p>• <span className="text-blue-400">R</span>: Pure resistive (90° to reactance)</p>
+          <p>• <span className="text-purple-400">L</span>: Pure inductive (+90°)</p>
+          <p>• <span className="text-pink-400">C</span>: Pure capacitive (-90°)</p>
+          <p>• <span className="text-cyan-400">RLC</span>: May resonate</p>
+        </div>
       </div>
     </Card>
   );

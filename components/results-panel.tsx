@@ -1,13 +1,14 @@
 'use client';
 
-import { CircuitMetrics } from '@/lib/types';
+import { CircuitMetrics, CircuitMode } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 
 interface ResultsPanelProps {
   metrics: CircuitMetrics;
+  mode: CircuitMode;
 }
 
-export function ResultsPanel({ metrics }: ResultsPanelProps) {
+export function ResultsPanel({ metrics, mode }: ResultsPanelProps) {
   const metrics_data = [
     {
       label: 'Impedance',

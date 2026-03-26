@@ -2,12 +2,14 @@
 
 import { PhasorData } from '@/lib/types';
 import { Card } from '@/components/ui/card';
+import { useState } from 'react';
 
 interface PhasorDiagramProps {
   data: PhasorData;
 }
 
 export function PhasorDiagram({ data }: PhasorDiagramProps) {
+  const [hoveredPhasor, setHoveredPhasor] = useState<string | null>(null);
   const size = 300;
   const center = size / 2;
   
@@ -76,83 +78,143 @@ export function PhasorDiagram({ data }: PhasorDiagramProps) {
         ))}
 
         {/* Voltage phasor */}
-        <line
-          x1={center}
-          y1={center}
-          x2={voltage_x}
-          y2={voltage_y}
-          stroke="rgb(59, 130, 246)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <circle
-          cx={voltage_x}
-          cy={voltage_y}
-          r="4"
-          fill="rgb(59, 130, 246)"
-        />
-        <text
-          x={voltage_x + 10}
-          y={voltage_y - 10}
-          fontSize="12"
-          fill="rgb(147, 197, 253)"
-          fontWeight="bold"
+        <g
+          onMouseEnter={() => setHoveredPhasor('V')}
+          onMouseLeave={() => setHoveredPhasor(null)}
+          style={{ cursor: 'pointer' }}
         >
-          V
-        </text>
+          <line
+            x1={center}
+            y1={center}
+            x2={voltage_x}
+            y2={voltage_y}
+            stroke={hoveredPhasor === 'V' ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)'}
+            strokeWidth={hoveredPhasor === 'V' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            className="transition-all duration-200"
+          />
+          <circle
+            cx={voltage_x}
+            cy={voltage_y}
+            r={hoveredPhasor === 'V' ? 6 : 4}
+            fill={hoveredPhasor === 'V' ? 'rgb(96, 165, 250)' : 'rgb(59, 130, 246)'}
+            className="transition-all duration-200"
+          />
+          {hoveredPhasor === 'V' && (
+            <circle
+              cx={voltage_x}
+              cy={voltage_y}
+              r={8}
+              fill="none"
+              stroke="rgb(96, 165, 250)"
+              strokeWidth="1"
+              opacity="0.5"
+            />
+          )}
+          <text
+            x={voltage_x + 10}
+            y={voltage_y - 10}
+            fontSize="12"
+            fill={hoveredPhasor === 'V' ? 'rgb(191, 219, 254)' : 'rgb(147, 197, 253)'}
+            fontWeight="bold"
+            className="transition-all duration-200"
+          >
+            V
+          </text>
+        </g>
 
         {/* Current phasor */}
-        <line
-          x1={center}
-          y1={center}
-          x2={current_x}
-          y2={current_y}
-          stroke="rgb(168, 85, 247)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <circle
-          cx={current_x}
-          cy={current_y}
-          r="4"
-          fill="rgb(168, 85, 247)"
-        />
-        <text
-          x={current_x + 10}
-          y={current_y + 15}
-          fontSize="12"
-          fill="rgb(196, 181, 253)"
-          fontWeight="bold"
+        <g
+          onMouseEnter={() => setHoveredPhasor('I')}
+          onMouseLeave={() => setHoveredPhasor(null)}
+          style={{ cursor: 'pointer' }}
         >
-          I
-        </text>
+          <line
+            x1={center}
+            y1={center}
+            x2={current_x}
+            y2={current_y}
+            stroke={hoveredPhasor === 'I' ? 'rgb(196, 181, 253)' : 'rgb(168, 85, 247)'}
+            strokeWidth={hoveredPhasor === 'I' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            className="transition-all duration-200"
+          />
+          <circle
+            cx={current_x}
+            cy={current_y}
+            r={hoveredPhasor === 'I' ? 6 : 4}
+            fill={hoveredPhasor === 'I' ? 'rgb(196, 181, 253)' : 'rgb(168, 85, 247)'}
+            className="transition-all duration-200"
+          />
+          {hoveredPhasor === 'I' && (
+            <circle
+              cx={current_x}
+              cy={current_y}
+              r={8}
+              fill="none"
+              stroke="rgb(196, 181, 253)"
+              strokeWidth="1"
+              opacity="0.5"
+            />
+          )}
+          <text
+            x={current_x + 10}
+            y={current_y + 15}
+            fontSize="12"
+            fill={hoveredPhasor === 'I' ? 'rgb(233, 213, 253)' : 'rgb(196, 181, 253)'}
+            fontWeight="bold"
+            className="transition-all duration-200"
+          >
+            I
+          </text>
+        </g>
 
         {/* Impedance phasor */}
-        <line
-          x1={center}
-          y1={center}
-          x2={impedance_x}
-          y2={impedance_y}
-          stroke="rgb(34, 197, 94)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="5"
-        />
-        <circle
-          cx={impedance_x}
-          cy={impedance_y}
-          r="4"
-          fill="rgb(34, 197, 94)"
-        />
-        <text
-          x={impedance_x - 25}
-          y={impedance_y - 10}
-          fontSize="12"
-          fill="rgb(134, 239, 172)"
-          fontWeight="bold"
+        <g
+          onMouseEnter={() => setHoveredPhasor('Z')}
+          onMouseLeave={() => setHoveredPhasor(null)}
+          style={{ cursor: 'pointer' }}
         >
-          Z
-        </text>
+          <line
+            x1={center}
+            y1={center}
+            x2={impedance_x}
+            y2={impedance_y}
+            stroke={hoveredPhasor === 'Z' ? 'rgb(74, 222, 128)' : 'rgb(34, 197, 94)'}
+            strokeWidth={hoveredPhasor === 'Z' ? 3.5 : 2.5}
+            strokeLinecap="round"
+            strokeDasharray="5"
+            className="transition-all duration-200"
+          />
+          <circle
+            cx={impedance_x}
+            cy={impedance_y}
+            r={hoveredPhasor === 'Z' ? 6 : 4}
+            fill={hoveredPhasor === 'Z' ? 'rgb(74, 222, 128)' : 'rgb(34, 197, 94)'}
+            className="transition-all duration-200"
+          />
+          {hoveredPhasor === 'Z' && (
+            <circle
+              cx={impedance_x}
+              cy={impedance_y}
+              r={8}
+              fill="none"
+              stroke="rgb(74, 222, 128)"
+              strokeWidth="1"
+              opacity="0.5"
+            />
+          )}
+          <text
+            x={impedance_x - 25}
+            y={impedance_y - 10}
+            fontSize="12"
+            fill={hoveredPhasor === 'Z' ? 'rgb(187, 247, 208)' : 'rgb(134, 239, 172)'}
+            fontWeight="bold"
+            className="transition-all duration-200"
+          >
+            Z
+          </text>
+        </g>
 
         {/* Center point */}
         <circle cx={center} cy={center} r="2" fill="rgb(100, 116, 139)" />
