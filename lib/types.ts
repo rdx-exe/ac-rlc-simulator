@@ -1,5 +1,5 @@
 // Circuit state and physics types
-export type CircuitMode = 'R' | 'RL' | 'RC' | 'RLC';
+export type CircuitMode = 'R' | 'L' | 'C' | 'RL' | 'RC' | 'RLC';
 
 export interface CircuitState {
   mode: CircuitMode;

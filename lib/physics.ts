@@ -116,6 +116,10 @@ function getEffectiveReactance(state: CircuitState): number {
   switch (state.mode) {
     case 'R':
       return 0;
+    case 'L':
+      return calculateInductiveReactance(state.frequency, state.inductance);
+    case 'C':
+      return -calculateCapacitiveReactance(state.frequency, state.capacitance);
     case 'RL':
       return calculateInductiveReactance(state.frequency, state.inductance);
     case 'RC':
@@ -131,9 +135,23 @@ function getEffectiveReactance(state: CircuitState): number {
  * Calculate all circuit metrics
  */
 export function calculateMetrics(state: CircuitState): CircuitMetrics {
-  const xl = state.mode === 'R' || state.mode === 'RC' ? 0 : calculateInductiveReactance(state.frequency, state.inductance);
-  const xc = state.mode === 'R' || state.mode === 'RL' ? 0 : calculateCapacitiveReactance(state.frequency, state.capacitance);
-  const x = getEffectiveReactance(state);
+  // Determine which reactances to calculate based on mode
+  const shouldCalcXL = state.mode === 'L' || state.mode === 'RL' || state.mode === 'RLC';
+  const shouldCalcXC = state.mode === 'C' || state.mode === 'RC' || state.mode === 'RLC';
+
+  const xl = shouldCalcXL ? calculateInductiveReactance(state.frequency, state.inductance) : 0;
+  const xc = shouldCalcXC ? calculateCapacitiveReactance(state.frequency, state.capacitance) : 0;
+  
+  // Calculate net reactance
+  let x = 0;
+  if (state.mode === 'RLC') {
+    x = calculateTotalReactance(xl, xc);
+  } else if (state.mode === 'L' || state.mode === 'RL') {
+    x = xl;
+  } else if (state.mode === 'C' || state.mode === 'RC') {
+    x = -xc;
+  }
+
   const z = calculateImpedance(state.resistance, x);
   const i = calculateCurrent(state.voltage, z);
   const phi = calculatePhaseAngle(x, state.resistance);
@@ -141,8 +159,12 @@ export function calculateMetrics(state: CircuitState): CircuitMetrics {
   const p = calculateRealPower(state.voltage, i, phi);
   const q = calculateReactivePower(state.voltage, i, phi);
   const s = calculateApparentPower(state.voltage, i);
-  const f0 = state.mode === 'RLC' ? calculateResonantFrequency(state.inductance, state.capacitance) : 0;
-  const q_factor = state.mode === 'RLC' ? calculateQualityFactor(state.resistance, state.inductance, state.capacitance) : 0;
+  const f0 = (state.mode === 'RLC' && state.inductance > 0 && state.capacitance > 0) 
+    ? calculateResonantFrequency(state.inductance, state.capacitance) 
+    : 0;
+  const q_factor = (state.mode === 'RLC' && state.resistance > 0 && state.inductance > 0 && state.capacitance > 0)
+    ? calculateQualityFactor(state.resistance, state.inductance, state.capacitance)
+    : 0;
 
   return {
     inductive_reactance: xl,
@@ -220,9 +242,22 @@ export function generateFrequencySweepData(state: CircuitState, points: number =
   const step = (maxFreq - minFreq) / points;
 
   for (let freq = minFreq; freq <= maxFreq; freq += step) {
-    const xl = state.mode === 'R' || state.mode === 'RC' ? 0 : calculateInductiveReactance(freq, state.inductance);
-    const xc = state.mode === 'R' || state.mode === 'RL' ? 0 : calculateCapacitiveReactance(freq, state.capacitance);
-    const x = calculateTotalReactance(xl, xc);
+    // Determine reactances based on mode
+    const shouldCalcXL = state.mode === 'L' || state.mode === 'RL' || state.mode === 'RLC';
+    const shouldCalcXC = state.mode === 'C' || state.mode === 'RC' || state.mode === 'RLC';
+
+    const xl = shouldCalcXL ? calculateInductiveReactance(freq, state.inductance) : 0;
+    const xc = shouldCalcXC ? calculateCapacitiveReactance(freq, state.capacitance) : 0;
+    
+    let x = 0;
+    if (state.mode === 'RLC') {
+      x = calculateTotalReactance(xl, xc);
+    } else if (state.mode === 'L' || state.mode === 'RL') {
+      x = xl;
+    } else if (state.mode === 'C' || state.mode === 'RC') {
+      x = -xc;
+    }
+
     const z = calculateImpedance(state.resistance, x);
     const i = calculateCurrent(state.voltage, z);
 
