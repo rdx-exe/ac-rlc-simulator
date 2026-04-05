@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import { CircuitState } from '@/lib/types';
 import {
   calculateMetrics,
-  generatePhasorData,
   generateWaveformData,
   generateFrequencySweepData,
 } from '@/lib/physics';
@@ -28,7 +27,6 @@ export function CircuitDashboard() {
   const [state, setState] = useState<CircuitState>(DEFAULT_STATE);
 
   const metrics = useMemo(() => calculateMetrics(state), [state]);
-  const phasorData = useMemo(() => generatePhasorData(state, metrics), [state, metrics]);
   const waveformData = useMemo(() => generateWaveformData(state, metrics), [state, metrics]);
   const frequencySweepData = useMemo(() => generateFrequencySweepData(state), [state]);
 
@@ -62,7 +60,7 @@ export function CircuitDashboard() {
           {/* Middle Column - Results and Phasor (Full width on mobile, 1/2 on tablet, 1/3 on desktop) */}
           <div className="space-y-4 md:space-y-6 sm:col-span-1">
             <ResultsPanel metrics={metrics} mode={state.mode} />
-            <PhasorDiagram data={phasorData} />
+            <PhasorDiagram state={state} metrics={metrics} />
           </div>
 
           {/* Right Column - Impedance and Waveform (Full width on mobile, 1/2 on tablet, 1/3 on desktop) */}
