@@ -57,7 +57,7 @@ export function PhasorDiagram({ state, metrics }: PhasorDiagramProps) {
         : `Voltage lags current by ${Math.abs(metrics.phase_angle_degrees).toFixed(1)}°`;
 
   return (
-    <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
+    <Card className="p-4 md:p-6 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl">
       <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4">Phasor Diagram</h3>
 
       <div className="flex justify-center overflow-hidden">
