@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { CircuitState } from '@/lib/types';
 import {
   calculateMetrics,
@@ -13,6 +14,7 @@ import { PhasorDiagram } from './phasor-diagram';
 import { ImpedanceTriangle } from './impedance-triangle';
 import { WaveformChart } from './waveform-chart';
 import { FrequencySweepChart } from './frequency-sweep-chart';
+import { Button } from './ui/button';
 
 const DEFAULT_STATE: CircuitState = {
   mode: 'RLC',
@@ -35,7 +37,7 @@ export function CircuitDashboard() {
       {/* Header */}
       <header className="border-b border-slate-700 bg-linear-to-r from-slate-900 via-slate-800 to-slate-900 sticky top-0 z-50 shadow-lg">
         <div className="max-w-full px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent leading-tight">
                 AC-RLC Circuit Simulator
@@ -44,6 +46,18 @@ export function CircuitDashboard() {
                 Interactive visualization of AC circuit behavior with real-time calculations
               </p>
             </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setState(DEFAULT_STATE)}
+              aria-label="Reset values"
+              title="Reset values"
+              className="shrink-0 border-slate-600 bg-slate-900/60 text-slate-200 hover:bg-slate-800 hover:text-white"
+            >
+              <RotateCcw className="size-4" />
+            </Button>
           </div>
         </div>
       </header>
